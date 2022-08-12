@@ -1,4 +1,4 @@
-package com.example.usedbookstore;
+package com.example.alonesns;
 
 import org.junit.Test;
 
