@@ -1,13 +1,14 @@
 package com.example.alonesns.Model;
 
+import com.example.alonesns.Presenter.LoginContract;
+import com.example.alonesns.Presenter.MainContract;
+
 // 데이터 관리를 해줄 Model 클래스
 public class MainModel {
     /*
-    LoginContract.Presenter loginPresenter;
     MainContract.Presenter mainPresenter;
 
-    public MainModel(LoginContract.Presenter loginPresenter, MainContract.Presenter mainPresenter){
-        this.loginPresenter = loginPresenter;
+    public MainModel(MainContract.Presenter mainPresenter){
         this.mainPresenter = mainPresenter;
     } */
 }
