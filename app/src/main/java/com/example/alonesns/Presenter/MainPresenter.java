@@ -19,6 +19,11 @@ public class MainPresenter implements MainContract.Presenter {
         view.onTabSelected(position);
     }
 
+    @Override
+    public void menuAction() {
+        view.newPostIntent();
+    }
+
     public void setData() {
         List<MainModel> items = new ArrayList<>();
         items.add(new MainModel("오늘 하루도 열심히", "2022-08-19"));

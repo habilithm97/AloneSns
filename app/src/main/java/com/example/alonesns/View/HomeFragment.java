@@ -44,5 +44,8 @@ public class HomeFragment extends Fragment implements MainContract.View {
     }
 
     @Override
+    public void newPostIntent() {}
+
+    @Override
     public void onTabSelected(int position) {}
 }

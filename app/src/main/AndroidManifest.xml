@@ -9,8 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UsedBookStore">
-        <activity android:name="com.example.alonesns.View.MainActivity"></activity>
-        <activity android:name="com.example.alonesns.View.LoginActivity">
+        <activity android:name=".View.NewPostActivity"></activity>
+        <activity android:name=".View.MainActivity" />
+        <activity android:name=".View.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

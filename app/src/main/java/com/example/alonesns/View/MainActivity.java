@@ -2,7 +2,11 @@ package com.example.alonesns.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.alonesns.Model.MainModel;
@@ -73,6 +77,28 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         } else if(position == 2) {
             bottomNavi.setSelectedItemId(R.id.tab3);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.new_post_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.newPost:
+                presenter.menuAction();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void newPostIntent() {
+        Intent intent = new Intent(getApplicationContext(), NewPostActivity.class);
+        startActivity(intent);
     }
 
     @Override
