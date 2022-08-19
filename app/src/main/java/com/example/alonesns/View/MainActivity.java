@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.alonesns.Model.MainModel;
 import com.example.alonesns.Presenter.MainContract;
 import com.example.alonesns.Presenter.MainPresenter;
 import com.example.alonesns.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
@@ -71,4 +74,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             bottomNavi.setSelectedItemId(R.id.tab3);
         }
     }
+
+    @Override
+    public void loadData(List<MainModel> items) {}
 }

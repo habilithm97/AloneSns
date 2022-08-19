@@ -1,35 +1,25 @@
 package com.example.alonesns.View;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.alonesns.HomeAdapter;
+import com.example.alonesns.Model.MainModel;
+import com.example.alonesns.Presenter.MainContract;
+import com.example.alonesns.Presenter.MainPresenter;
 import com.example.alonesns.R;
 
-public class HomeFragment extends Fragment {
+import java.util.List;
 
-    Context context;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        if(context != null) {
-            context = null;
-        }
-    }
+public class HomeFragment extends Fragment implements MainContract.View {
+    private HomeAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,5 +29,20 @@ public class HomeFragment extends Fragment {
     }
 
     private void init(ViewGroup rootView) {
+        adapter = new HomeAdapter();
+        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        MainPresenter mainPresenter = new MainPresenter(this);
+        mainPresenter.setData();
     }
+
+    @Override
+    public void loadData(List<MainModel> items) {
+        adapter.setItem(items);
+    }
+
+    @Override
+    public void onTabSelected(int position) {}
 }

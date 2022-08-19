@@ -5,11 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".View.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/tv"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="홈 프래그먼트" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>
