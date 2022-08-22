@@ -100,7 +100,4 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Intent intent = new Intent(getApplicationContext(), NewPostActivity.class);
         startActivity(intent);
     }
-
-    @Override
-    public void loadData(List<MainModel> items) {}
 }

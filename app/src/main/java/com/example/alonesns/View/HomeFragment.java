@@ -12,13 +12,15 @@ import android.view.ViewGroup;
 
 import com.example.alonesns.HomeAdapter;
 import com.example.alonesns.Model.MainModel;
+import com.example.alonesns.Presenter.HomeContract;
+import com.example.alonesns.Presenter.HomePresenter;
 import com.example.alonesns.Presenter.MainContract;
 import com.example.alonesns.Presenter.MainPresenter;
 import com.example.alonesns.R;
 
 import java.util.List;
 
-public class HomeFragment extends Fragment implements MainContract.View {
+public class HomeFragment extends Fragment implements HomeContract.View {
     private HomeAdapter adapter;
 
     @Override
@@ -34,18 +36,12 @@ public class HomeFragment extends Fragment implements MainContract.View {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        MainPresenter mainPresenter = new MainPresenter(this);
-        mainPresenter.setData();
+        HomePresenter homePresenter = new HomePresenter(this);
+        homePresenter.setData();
     }
 
     @Override
     public void loadData(List<MainModel> items) {
         adapter.setItem(items);
     }
-
-    @Override
-    public void newPostIntent() {}
-
-    @Override
-    public void onTabSelected(int position) {}
 }
