@@ -9,9 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UsedBookStore">
-        <activity android:name=".View.NewPostActivity"></activity>
-        <activity android:name=".View.MainActivity" />
-        <activity android:name=".View.LoginActivity">
+        <activity android:name=".View.NewPostActivity"
+            android:exported="true"></activity>
+        <activity android:name=".View.MainActivity"
+            android:exported="true"/>
+        <activity android:name=".View.LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
