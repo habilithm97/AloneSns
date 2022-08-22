@@ -8,8 +8,18 @@ import java.util.List;
 public interface NewPostContract {
 
     interface View {
+        void setDate();
+        void setPhoto();
+        void edtControl();
+        void uploadResult();
+        void cancelResult();
     }
 
     interface Presenter {
+        void getDate();
+        void getPhoto();
+        void edtAction();
+        void uploadAction();
+        void cancelAction();
     }
 }
