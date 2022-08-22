@@ -15,11 +15,16 @@ import com.example.alonesns.Presenter.NewPostContract;
 import com.example.alonesns.Presenter.NewPostPresenter;
 import com.example.alonesns.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class NewPostActivity extends AppCompatActivity implements NewPostContract.View {
 
     private NewPostContract.Presenter presenter;
 
     EditText contentEdt;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    TextView dateTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,9 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     }
 
     public void init() {
-        TextView dateTv = (TextView)findViewById(R.id.dateTv);
+        dateTv = (TextView)findViewById(R.id.dateTv);
+        presenter.getDate();
+
         ImageView img = (ImageView)findViewById(R.id.img);
 
         contentEdt = (EditText)findViewById(R.id.contentEdt);
@@ -56,7 +63,13 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
 
     @Override
     public void setDate() {
+        dateTv.setText(nowDate());
+    }
 
+    private String nowDate() {
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        return dateFormat.format(date);
     }
 
     @Override
