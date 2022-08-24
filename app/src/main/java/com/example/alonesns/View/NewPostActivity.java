@@ -70,7 +70,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.getPhoto();
+                presenter.uploadAction();
             }
         });
 
@@ -130,7 +130,15 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
 
     @Override
     public void uploadResult() {
+        saveData();
+    }
 
+    public void saveData() {
+        String date = dateTv.getText().toString();
+
+        String content = contentEdt.getText().toString();
+
+        String sql = "insert into " +
     }
 
     @Override
