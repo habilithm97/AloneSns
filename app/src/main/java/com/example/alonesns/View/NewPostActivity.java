@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -16,15 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.alonesns.MyDatabase;
 import com.example.alonesns.Presenter.NewPostContract;
 import com.example.alonesns.Presenter.NewPostPresenter;
 import com.example.alonesns.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NewPostActivity extends AppCompatActivity implements NewPostContract.View {
+    private static final String TAG = "NewPostActivity";
 
     private NewPostContract.Presenter presenter;
 
@@ -33,8 +38,13 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     TextView dateTv;
 
     private static final int REQUEST_CODE = 0;
+    private static String PHOTO_FOLDER;
 
     ImageView imageView;
+
+    Context context;
+
+    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +119,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                 try {
                     // 선택한 이미지에서 비트맵을 생성하고 그 비트맵을 이미지뷰에 표시함
                     InputStream in = getContentResolver().openInputStream(data.getData());
-                    Bitmap bitmap = BitmapFactory.decodeStream(in);
+                    bitmap = BitmapFactory.decodeStream(in);
                     imageView.setImageBitmap(bitmap);
                 } catch (Exception e) {}
             } else if(resultCode == RESULT_CANCELED){
@@ -135,10 +145,49 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
 
     public void saveData() {
         String date = dateTv.getText().toString();
-
+        String picturePath = savePicture();
         String content = contentEdt.getText().toString();
 
-        String sql = "insert into " +
+        String sql = "insert into " + MyDatabase.TABLE_NAME + "(DATE, PICTURE, CONTENT) values(" +
+                "'" + date + "', " +
+                "'" + picturePath + "', " +
+                "'" + content + "')";
+
+        Log.d(TAG, "sql : " + sql);
+        MyDatabase database = MyDatabase.getInstance(context);
+        database.execSQL(sql);
+
+        finish();
+    }
+
+    private String savePicture() {
+        if(bitmap == null) {
+            Log.d(TAG, "저장할 사진이 없음. ");
+            return "";
+        }
+        // 이미지는 폴더를 만들어 저장하고, 이미지 경로만 데이터베이스에 저장함
+        File photoFolder = new File(PHOTO_FOLDER); // 이미지를 저장할 폴더
+        if(!photoFolder.isDirectory()) {
+            photoFolder.mkdir();
+            Log.d(TAG, "이미지 폴더 생성 : " + photoFolder);
+        }
+        String photoFileName = createFileName(); // 현재 날짜를 이미지 파일 이름으로 함
+        String picturePath = photoFolder + File.separator + photoFileName; // 이미지 경로
+
+        try {
+            FileOutputStream out = new FileOutputStream(picturePath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // 이미지를 압축(100이면 그대로)
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return picturePath;
+    }
+
+    private String createFileName() {
+        Date curDate = new Date();
+        String curDateStr = String.valueOf(curDate.getTime());
+        return curDateStr;
     }
 
     @Override
