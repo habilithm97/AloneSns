@@ -5,19 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.alonesns.AppConstants;
 import com.example.alonesns.Model.MainModel;
+import com.example.alonesns.MyDatabase;
 import com.example.alonesns.Presenter.MainContract;
 import com.example.alonesns.Presenter.MainPresenter;
 import com.example.alonesns.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
+    private static final String TAG = "MainActivity";
 
     private MainContract.Presenter presenter;
 
@@ -26,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     SettingFragment settingFragment;
 
     BottomNavigationView bottomNavi;
+
+    MyDatabase database = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +71,48 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 return false;
             }
         });
+        setPicturePath(); // 이미지 경로 접근 및 폴더 없으면 생성
+        openDatabase(); // 데이터베이스 열기
 
         presenter.onTabItemSelectedListener();
+    }
+
+    // 데이터베이스 열기(데이터베이스가 없으면 생성)
+    public void openDatabase() {
+        // 데이터베이스가 있으면 닫은 후 초기화하고
+        if(database != null) {
+            database.close();
+            database = null;
+        }
+        database = MyDatabase.getInstance(this);
+
+        boolean isOpen = database.open();
+        if(isOpen) {
+            Log.d(TAG,"데이터베이스가 오픈됨. ");
+        } else {
+            Log.d(TAG, "데이터베이스가 오픈되지 않음. ");
+        }
+    }
+
+    public void setPicturePath() {
+        String folderPath = getFilesDir().getAbsolutePath(); // 내부 저장소 파일 경로 접근 방법
+        AppConstants.PHOTO_FOLDER = folderPath + File.separator + "photo";
+
+        File photoFolder = new File(AppConstants.PHOTO_FOLDER);
+        if(!photoFolder.exists()) {
+            photoFolder.mkdir();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // 데이터베이스가 있으면 닫고 초기화
+        if(database != null) {
+            database.close();
+            database = null;
+        }
     }
 
     @Override

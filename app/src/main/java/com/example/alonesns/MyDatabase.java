@@ -25,7 +25,6 @@ public class MyDatabase {
     }
 
     public static MyDatabase getInstance(Context context) {
-        // 데이터 베이스가 없으면 생성
         if(database == null) {
             database = new MyDatabase(context);
         }
@@ -85,15 +84,17 @@ public class MyDatabase {
             println("[ " + DATABASE_NAME + " ] 데이터베이스 생성됨. ");
             println("[ " + TABLE_NAME + " ] 테이블 생성됨. ");
 
-            String DROP_SQL = "drop table if exists " + TABLE_NAME; // 테이블 삭제
+            // 테이블 삭제
+            String DROP_SQL = "drop table if exists " + TABLE_NAME;
             try {
                 db.execSQL(DROP_SQL);
             } catch (Exception e) {
                 Log.e(TAG, "테이블을 삭제하는데에 오류가 발생함. ");
             }
 
-            String CREATE_SQL = "create table " + TABLE_NAME + "(" // 테이블 생성
-                    + "  _id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            // 테이블 생성
+            String CREATE_SQL = "create table " + TABLE_NAME + "("
+                    + "  _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
                     + "  DATE TEXT DEFAULT '', "
                     + "  PICTURE TEXT DEFAULT '', "
                     + "  CONTENT TEXT DEFAULT '' " + ")";
@@ -103,7 +104,7 @@ public class MyDatabase {
                 Log.e(TAG, "테이블을 생성하는데에 오류가 발생함. ");
             }
 
-            String CREATE_INDEX_SQL = "create index " + TABLE_NAME + "_IDX ON " + TABLE_NAME + "(" + "CREATE_DATE" + ")";
+            String CREATE_INDEX_SQL = "create index " + TABLE_NAME + "_IDX ON " + TABLE_NAME + "(" + "DATE" + ")";
             try {
                 db.execSQL(CREATE_INDEX_SQL);
             } catch (Exception e) {

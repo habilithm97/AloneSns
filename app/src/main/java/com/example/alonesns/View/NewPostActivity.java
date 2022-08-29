@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.alonesns.AppConstants;
 import com.example.alonesns.MyDatabase;
 import com.example.alonesns.Presenter.NewPostContract;
 import com.example.alonesns.Presenter.NewPostPresenter;
@@ -38,7 +39,6 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     TextView dateTv;
 
     private static final int REQUEST_CODE = 0;
-    private static String PHOTO_FOLDER;
 
     ImageView imageView;
 
@@ -157,7 +157,8 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         MyDatabase database = MyDatabase.getInstance(context);
         database.execSQL(sql);
 
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private String savePicture() {
@@ -166,7 +167,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
             return "";
         }
         // 이미지는 폴더를 만들어 저장하고, 이미지 경로만 데이터베이스에 저장함
-        File photoFolder = new File(PHOTO_FOLDER); // 이미지를 저장할 폴더
+        File photoFolder = new File(AppConstants.PHOTO_FOLDER); // 이미지를 저장할 폴더
         if(!photoFolder.isDirectory()) {
             photoFolder.mkdir();
             Log.d(TAG, "이미지 폴더 생성 : " + photoFolder);

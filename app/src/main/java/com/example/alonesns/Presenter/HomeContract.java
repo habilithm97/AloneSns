@@ -1,5 +1,7 @@
 package com.example.alonesns.Presenter;
 
+import android.content.Context;
+
 import com.example.alonesns.Model.MainModel;
 
 import java.util.List;
