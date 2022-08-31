@@ -1,11 +1,15 @@
 package com.example.alonesns;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +24,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     private List<MainModel> items;
 
+    Context context;
+
     public HomeAdapter() {
         items = new ArrayList<>();
     }
@@ -28,6 +34,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public HomeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View itemView = (LayoutInflater.from(viewGroup.getContext())).inflate(R.layout.card_item, viewGroup, false);
+        context = viewGroup.getContext();
         return new ViewHolder(itemView);
     }
 
@@ -41,7 +48,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.imageView.setImageURI(Uri.parse("file://" + picturePath));
 
         holder.contentTv.setText(item.getContent());
-
     }
 
     @Override
@@ -54,7 +60,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         TextView dateTv, contentTv;
         ImageView imageView;
 
@@ -64,6 +70,36 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             dateTv = itemView.findViewById(R.id.dateTv);
             imageView = itemView.findViewById(R.id.imageView);
             contentTv = itemView.findViewById(R.id.contentTv);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("삭제하기");
+                    builder.setMessage("선택한 게시물을 정말로 삭제하시겠습니까 ?");
+                    builder.setIcon(R.drawable.delete);
+                    builder.setPositiveButton("삭제하기", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            //deleteItem();
+                            Toast.makeText(context, "삭제되었습니다. ", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            return true;
         }
     }
 }
