@@ -19,8 +19,8 @@ public class NewPostPresenter implements NewPostContract.Presenter {
     }
 
     @Override
-    public void getPhoto() {
-        view.setPhoto();
+    public void dialogAction(int id) {
+        view.showPhotoMenuDialog(id);
     }
 
     @Override

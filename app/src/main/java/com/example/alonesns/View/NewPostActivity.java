@@ -1,13 +1,19 @@
 package com.example.alonesns.View;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.alonesns.AppConstants;
+import com.example.alonesns.BuildConfig;
 import com.example.alonesns.MyDatabase;
 import com.example.alonesns.Presenter.NewPostContract;
 import com.example.alonesns.Presenter.NewPostPresenter;
@@ -35,16 +42,18 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     private NewPostContract.Presenter presenter;
 
     EditText contentEdt;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     TextView dateTv;
-
-    private static final int REQUEST_CODE = 0;
-
     ImageView imageView;
 
-    Context context;
+    boolean isPhotoCaptured;
+    boolean isPhotoFileSaved;
+    boolean isPhotoCanceled;
 
-    Bitmap bitmap;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    Bitmap resultBitmap;
+    int selectedPhotoMenu;
+    AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +72,11 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.getPhoto();
+                if(isPhotoCaptured || isPhotoFileSaved) {
+                    presenter.dialogAction(AppConstants.PHOTO); // 사진이 있을 때
+                } else {
+                    presenter.dialogAction(AppConstants.NOT_PHOTO); // 사진이 없을 때
+                }
             }
         });
 
@@ -105,28 +118,149 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     }
 
     @Override
-    public void setPhoto() {
-        Intent intent = new Intent();
-        intent.setType("image/*"); // 인텐트 타입은 이미지
-        intent.setAction(Intent.ACTION_GET_CONTENT); // 이미지 가져오기
-        startActivityForResult(intent, REQUEST_CODE);
+    public void showPhotoMenuDialog(int id) {
+        switch (id) {
+            case AppConstants.PHOTO: // 이미 사진을 가져와서 표시한 경우
+                builder = new AlertDialog.Builder(this);
+                builder.setTitle("사진 메뉴 선택");
+
+                // .setSingleChoiceItems() : 대화 상자 내용에 표시할 아이템 리스트와 아이템을 클릭했을 때 반응할 리스너를 설정함
+                builder.setSingleChoiceItems(R.array.array_photo, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichBtn) {
+                        selectedPhotoMenu = whichBtn;
+                    }
+                });
+
+                builder.setPositiveButton("선택", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (selectedPhotoMenu == 0) {
+                            showPhotoSelectionActivity(); // 앨범에서 선택하기
+                        } else if (selectedPhotoMenu == 1) { // 삭제하기
+                            imageView.setImageResource(R.drawable.find_image);
+                            isPhotoCanceled = true;
+                            // 사진이 삭제되었기 때문에 사진 유무 상태를 변경함
+                            isPhotoCaptured = false;
+                            isPhotoFileSaved = false;
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                });
+                break;
+
+                case AppConstants.NOT_PHOTO: // 사진을 가져오기 전인 경우
+                    builder = new AlertDialog.Builder(this);
+                    builder.setTitle("사진 메뉴 선택");
+
+                    builder.setSingleChoiceItems(R.array.array_not_photo, 0, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int whichBtn) {
+                            selectedPhotoMenu = whichBtn;
+                        }
+                    });
+
+                    builder.setPositiveButton("선택", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(selectedPhotoMenu == 0) {
+                                showPhotoSelectionActivity(); // 앨범에서 선택하기
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    });
+
+                    break;
+            default:
+                break;
+        }
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private File createFile() { // 파일 생성
+        String filename = createFileName();
+        File outFile = new File(this.getFilesDir(), filename);
+        return outFile;
+    }
+
+    private String createFileName() {
+        Date curDate = new Date();
+        String curDateStr = String.valueOf(curDate.getTime());
+        return curDateStr;
+    }
+
+    public void showPhotoSelectionActivity() { // 앨범에서 선택하기
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, AppConstants.REQ_PHOTO_SELECTION);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == REQUEST_CODE) {
-            if(resultCode == RESULT_OK) {
-                try {
-                    // 선택한 이미지에서 비트맵을 생성하고 그 비트맵을 이미지뷰에 표시함
-                    InputStream in = getContentResolver().openInputStream(data.getData());
-                    bitmap = BitmapFactory.decodeStream(in);
-                    imageView.setImageBitmap(bitmap);
-                } catch (Exception e) {}
-            } else if(resultCode == RESULT_CANCELED){
-                Toast.makeText(this, "이미지 선택 취소", Toast.LENGTH_SHORT).show();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        if(intent != null) {
+            switch (requestCode) {
+                case AppConstants.REQ_PHOTO_SELECTION: // 앨범에서 선택하기 메뉴를 선택했을 경우
+                    Uri selectionImage = intent.getData(); // 가져올 데이터의 주소
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA}; // 가져올 컬럼 이름 목록
+
+                    Cursor cursor = this.getContentResolver().query(selectionImage, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]); // 커서를 사용해 컬럼 인덱스 가져오기
+                    String filePath = cursor.getString(columnIndex); // 커서를 사용해 가져온 컬럼 인덱스를 문자열로 변환하기
+                    cursor.close();
+
+                    resultBitmap = decodeBitmapFromRes(new File(filePath), imageView.getWidth(), imageView.getHeight());
+                    imageView.setImageBitmap(resultBitmap);
+                    isPhotoCaptured = true;
+                    break;
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    // 대용량 비트맵을 Exception 없이 효과적으로 로딩하기
+    public static Bitmap decodeBitmapFromRes(File res, int reqWidth, int reqHeight) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true; // true일 경우, 이미지의 크기만 구해서 옵션에 설정함
+        BitmapFactory.decodeFile(res.getAbsolutePath(), options);
+        /*
+        *int inSampleSize
+         -이미지 파일을 디코딩할 때 원본 이미지 크기대로 디코딩할지, 축소해서 디코딩할지를 지정함
+         -값은 1 또는 2의 거듭 제곱 값이 들어갈 수 있음(그 외의 값일 경우 가장 가까운 2의 거듭 제곱 값으로 내림되어 실행됨
+         -값이 1일 경우(또는 1보다 작을 경우) : 원본 이미지 크기로
+         -값이 2일 경우(또는 2보다 클 경우) : 가로/세로 픽셀을 해당 값 만큼 나눈 크기로
+          ex) 값을 2로 지정했을 경우 이미지의 가로/세로 값이 각각 2로 나누어진 크기로 설정되어 실제 이미지 크기는 원본 이미지의 1/4가 됨
+        */
+        options.inSampleSize = calInSampleSize(options, reqWidth, reqHeight);
+        options.inJustDecodeBounds = false; // 로드하기 위해서 true에서 false로 설정함
+        return BitmapFactory.decodeFile(res.getAbsolutePath(), options);
+    }
+
+    // 로드하려는 이미지가 실제 필요한 사이즈보다 큰지 체크하고
+    // 실제 필요한 사이즈로 이미지를 조절하기
+    public static int calInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) { // reqWidth와 reqHeight는 필요한 사이즈, 즉 이미지뷰 사이즈임
+        final int height = options.outHeight; // 높이
+        final int width = options.outWidth; // 너비
+        int inSampleSize = 1; // 원본 이미지
+
+        if(height > reqHeight || width > reqWidth) { // 필요한 사이즈(이미지뷰)보다 크면
+            final int halfHeight = height;
+            final int halfWidth = width;
+
+            while((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2; // 이미지 축소
+            }
+        }
+        return inSampleSize;
     }
 
     @Override
@@ -154,15 +288,14 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                 "'" + content + "')";
 
         Log.d(TAG, "sql : " + sql);
-        MyDatabase database = MyDatabase.getInstance(context);
+        MyDatabase database = MyDatabase.getInstance(this);
         database.execSQL(sql);
 
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     private String savePicture() {
-        if(bitmap == null) {
+        if(resultBitmap == null) {
             Log.d(TAG, "저장할 사진이 없음. ");
             return "";
         }
@@ -177,18 +310,12 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
 
         try {
             FileOutputStream out = new FileOutputStream(picturePath);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // 이미지를 압축(100이면 그대로)
+            resultBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // 이미지를 압축(100이면 그대로)
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return picturePath;
-    }
-
-    private String createFileName() {
-        Date curDate = new Date();
-        String curDateStr = String.valueOf(curDate.getTime());
-        return curDateStr;
     }
 
     @Override

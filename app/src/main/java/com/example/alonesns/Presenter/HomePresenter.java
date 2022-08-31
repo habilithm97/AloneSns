@@ -2,16 +2,20 @@ package com.example.alonesns.Presenter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.alonesns.Model.MainModel;
 import com.example.alonesns.MyDatabase;
 import com.example.alonesns.View.HomeFragment;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 // Model과 View를 연결하여 동작을 처리함
 public class HomePresenter implements HomeContract.Presenter {
+    private static final String TAG = "HomePresenter";
+
     HomeContract.View view;
 
     Context context;
@@ -37,6 +41,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 String picture = cursor.getString(2);
                 String content = cursor.getString(3);
 
+                Log.d(TAG, "#" + i + " -> " + _id + ", " + date + ", " + picture + ", " + content);
                 items.add(new MainModel(_id, date, picture, content));
             }
             cursor.close(); // 커서 사용 후에는 닫아야 됨

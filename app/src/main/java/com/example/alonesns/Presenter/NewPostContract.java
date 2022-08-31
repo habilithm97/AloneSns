@@ -9,7 +9,7 @@ public interface NewPostContract {
 
     interface View {
         void setDate();
-        void setPhoto();
+        void showPhotoMenuDialog(int id);
         void edtControl();
         void uploadResult();
         void cancelResult();
@@ -17,7 +17,7 @@ public interface NewPostContract {
 
     interface Presenter {
         void getDate();
-        void getPhoto();
+        void dialogAction(int id);
         void edtAction();
         void uploadAction();
         void cancelAction();
