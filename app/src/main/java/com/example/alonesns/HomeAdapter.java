@@ -1,8 +1,10 @@
 package com.example.alonesns;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,8 +34,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, int position) {
         MainModel item = items.get(position);
-        holder.contentTv.setText(item.getContent());
+
         holder.dateTv.setText(item.getDate());
+
+        String picturePath = item.getPicture();
+        holder.imageView.setImageURI(Uri.parse("file://" + picturePath));
+
+        holder.contentTv.setText(item.getContent());
+
     }
 
     @Override
@@ -47,13 +55,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView contentTv, dateTv;
+        TextView dateTv, contentTv;
+        ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            contentTv = itemView.findViewById(R.id.contentTv);
             dateTv = itemView.findViewById(R.id.dateTv);
+            imageView = itemView.findViewById(R.id.imageView);
+            contentTv = itemView.findViewById(R.id.contentTv);
         }
     }
 }
