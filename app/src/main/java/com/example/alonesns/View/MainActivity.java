@@ -11,7 +11,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.alonesns.AppConstants;
-import com.example.alonesns.Model.MainModel;
 import com.example.alonesns.MyDatabase;
 import com.example.alonesns.Presenter.MainContract;
 import com.example.alonesns.Presenter.MainPresenter;
@@ -19,7 +18,6 @@ import com.example.alonesns.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
     private static final String TAG = "MainActivity";
@@ -39,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        presenter = new MainPresenter(this); // Presenter와 통신하기 위한 객체 생성
+        presenter = new MainPresenter(this);
         init();
     }
 
@@ -71,15 +69,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 return false;
             }
         });
-        setPicturePath(); // 이미지 경로 접근 및 폴더 없으면 생성
-        openDatabase(); // 데이터베이스 열기
+        setPicturePath(); // 사진 경로 접근 및 폴더 없으면 생성
+        openDatabase(); // 데이터베이스 오픈
 
         presenter.onTabItemSelectedListener();
     }
 
-    // 데이터베이스 열기(데이터베이스가 없으면 생성)
     public void openDatabase() {
-        // 데이터베이스가 있으면 닫은 후 초기화하고
         if(database != null) {
             database.close();
             database = null;
@@ -95,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     public void setPicturePath() {
-        String folderPath = getFilesDir().getAbsolutePath(); // 내부 저장소 파일 경로 접근 방법
+        String folderPath = getFilesDir().getAbsolutePath(); // 내부 저장소 파일 경로 접근
         AppConstants.PHOTO_FOLDER = folderPath + File.separator + "photo";
 
         File photoFolder = new File(AppConstants.PHOTO_FOLDER);
@@ -108,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onDestroy() {
         super.onDestroy();
 
-        // 데이터베이스가 있으면 닫고 초기화
         if(database != null) {
             database.close();
             database = null;

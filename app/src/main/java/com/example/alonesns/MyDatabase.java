@@ -81,8 +81,8 @@ public class MyDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            println("[ " + DATABASE_NAME + " ] 데이터베이스 생성됨. ");
-            println("[ " + TABLE_NAME + " ] 테이블 생성됨. ");
+            println("[ " + DATABASE_NAME + " ] 데이터베이스가 생성됨. ");
+            println("[ " + TABLE_NAME + " ] 테이블이 생성됨. ");
 
             // 테이블 삭제
             String DROP_SQL = "drop table if exists " + TABLE_NAME;

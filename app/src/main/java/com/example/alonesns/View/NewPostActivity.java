@@ -120,7 +120,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     @Override
     public void showPhotoMenuDialog(int id) {
         switch (id) {
-            case AppConstants.PHOTO: // 이미 사진을 가져와서 표시한 경우
+            case AppConstants.PHOTO: // 이미지뷰에 사진이 있는 경우
                 builder = new AlertDialog.Builder(this);
                 builder.setTitle("사진 메뉴 선택");
 
@@ -139,8 +139,8 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                             showPhotoSelectionActivity(); // 앨범에서 선택하기
                         } else if (selectedPhotoMenu == 1) { // 삭제하기
                             imageView.setImageResource(R.drawable.find_image);
-                            isPhotoCanceled = true;
                             // 사진이 삭제되었기 때문에 사진 유무 상태를 변경함
+                            isPhotoCanceled = true;
                             isPhotoCaptured = false;
                             isPhotoFileSaved = false;
                         }
@@ -153,7 +153,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                 });
                 break;
 
-                case AppConstants.NOT_PHOTO: // 사진을 가져오기 전인 경우
+                case AppConstants.NOT_PHOTO: // 이미지뷰에 사진이 없는 경우
                     builder = new AlertDialog.Builder(this);
                     builder.setTitle("사진 메뉴 선택");
 
@@ -186,12 +186,6 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         dialog.show();
     }
 
-    private File createFile() { // 파일 생성
-        String filename = createFileName();
-        File outFile = new File(this.getFilesDir(), filename);
-        return outFile;
-    }
-
     private String createFileName() {
         Date curDate = new Date();
         String curDateStr = String.valueOf(curDate.getTime());
@@ -199,7 +193,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     }
 
     public void showPhotoSelectionActivity() { // 앨범에서 선택하기
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // 외부 스토리지에서 가져오기
         startActivityForResult(intent, AppConstants.REQ_PHOTO_SELECTION);
     }
 
@@ -227,9 +221,11 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
-    // 대용량 비트맵을 Exception 없이 효과적으로 로딩하기
+    // 대용량 비트맵을 Exception 없이 효과적으로 로딩하기(최적화 로딩)
     public static Bitmap decodeBitmapFromRes(File res, int reqWidth, int reqHeight) {
         final BitmapFactory.Options options = new BitmapFactory.Options();
+        // decode~ 메서드들은 비트맵을 생성하기 위해 메모리를 할당하려고 시도하고 그 결과 쉽게 OutOfMemory에 도달해버리는데,
+        // options를 통해 옵션들을 조정할 수 있음
         options.inJustDecodeBounds = true; // true일 경우, 이미지의 크기만 구해서 옵션에 설정함
         BitmapFactory.decodeFile(res.getAbsolutePath(), options);
         /*
@@ -299,18 +295,18 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
             Log.d(TAG, "저장할 사진이 없음. ");
             return "";
         }
-        // 이미지는 폴더를 만들어 저장하고, 이미지 경로만 데이터베이스에 저장함
-        File photoFolder = new File(AppConstants.PHOTO_FOLDER); // 이미지를 저장할 폴더
+        // 사진은 폴더를 만들어 저장하고, 사진 경로만 데이터베이스에 저장함
+        File photoFolder = new File(AppConstants.PHOTO_FOLDER); // 사진을 저장할 폴더
         if(!photoFolder.isDirectory()) {
             photoFolder.mkdir();
-            Log.d(TAG, "이미지 폴더 생성 : " + photoFolder);
+            Log.d(TAG, "사진 폴더 생성 : " + photoFolder);
         }
-        String photoFileName = createFileName(); // 현재 날짜를 이미지 파일 이름으로 함
-        String picturePath = photoFolder + File.separator + photoFileName; // 이미지 경로
+        String photoFileName = createFileName(); // 현재 날짜를 사진 파일 이름으로 함
+        String picturePath = photoFolder + File.separator + photoFileName; // 사진 경로
 
         try {
             FileOutputStream out = new FileOutputStream(picturePath);
-            resultBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // 이미지를 압축(100이면 그대로)
+            resultBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // 이미지를 압축(100이면 그대로) -> resultBitmap은 이미 압축 과정이 끝남
             out.close();
         } catch (Exception e) {
             e.printStackTrace();

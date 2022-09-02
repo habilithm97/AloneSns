@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alonesns.Model.MainModel;
-import com.example.alonesns.Presenter.MainContract;
 
 import java.util.ArrayList;
 import java.util.List;
