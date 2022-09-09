@@ -1,5 +1,6 @@
 package com.example.alonesns;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,34 +13,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alonesns.Model.MainModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private List<MainModel> items;
+    private Activity context;
+    private RoomDB roomDB;
 
-    Context context;
+    /*Context context;
 
     public HomeAdapter() {
         items = new ArrayList<>();
+    } */
+
+    public ItemAdapter(Activity context, List<MainModel> items) {
+        this.context = context;
+        this.items = items;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public HomeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ItemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View itemView = (LayoutInflater.from(viewGroup.getContext())).inflate(R.layout.card_item, viewGroup, false);
-        context = viewGroup.getContext();
+        //context = viewGroup.getContext();
         return new ViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemAdapter.ViewHolder holder, int position) {
         MainModel item = items.get(position);
+        roomDB = RoomDB.getInstance(context);
 
         holder.dateTv.setText(item.getDate());
 
@@ -81,7 +91,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                     builder.setIcon(R.drawable.delete);
                     builder.setPositiveButton("삭제하기", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            //deleteItem();
+                            deleteItem();
                             Toast.makeText(context, "삭제되었습니다. ", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -100,5 +110,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         public boolean onLongClick(View v) {
             return true;
         }
+    }
+
+    public void deleteItem() {
+
     }
 }

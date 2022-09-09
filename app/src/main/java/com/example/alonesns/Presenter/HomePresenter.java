@@ -17,6 +17,8 @@ public class HomePresenter implements HomeContract.Presenter {
 
     Context context;
 
+    public List<MainModel> items;
+
     public HomePresenter(HomeContract.View view) {
         this.view = view;
     }
@@ -28,7 +30,7 @@ public class HomePresenter implements HomeContract.Presenter {
         if (database != null) {
             Cursor cursor = database.rawQuery(sql);
             int recordCount = cursor.getCount();
-            List<MainModel> items = new ArrayList<>();
+            items = new ArrayList<>();
 
             for (int i = 0; i < recordCount; i++) {
                 cursor.moveToNext();
@@ -39,7 +41,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 String content = cursor.getString(3);
 
                 Log.d(TAG, "#" + i + " -> " + _id + ", " + date + ", " + picture + ", " + content);
-                items.add(new MainModel(_id, date, picture, content));
+                //items.add(new MainModel(_id, date, picture, content));
             }
             cursor.close(); // 커서 사용 후에는 닫아야 됨
             view.setData(items);

@@ -16,5 +16,7 @@ public interface NewPostContract {
         void edtAction();
         void uploadAction();
         void cancelAction();
+
+        void saveDataAction();
     }
 }

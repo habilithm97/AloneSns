@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.example.alonesns.AppConstants;
 import com.example.alonesns.BuildConfig;
+import com.example.alonesns.ItemAdapter;
+import com.example.alonesns.Model.MainModel;
 import com.example.alonesns.MyDatabase;
 import com.example.alonesns.Presenter.NewPostContract;
 import com.example.alonesns.Presenter.NewPostPresenter;
@@ -54,6 +56,8 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     Bitmap resultBitmap;
     int selectedPhotoMenu;
     AlertDialog.Builder builder;
+
+    ItemAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,6 +282,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         String picturePath = savePicture();
         String content = contentEdt.getText().toString();
 
+        /*
         String sql = "insert into " + MyDatabase.TABLE_NAME + "(DATE, PICTURE, CONTENT) values(" +
                 "'" + date + "', " +
                 "'" + picturePath + "', " +
@@ -285,9 +290,9 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
 
         Log.d(TAG, "sql : " + sql);
         MyDatabase database = MyDatabase.getInstance(this);
-        database.execSQL(sql);
+        database.execSQL(sql); */
 
-        finish();
+        presenter.saveDataAction();
     }
 
     private String savePicture() {

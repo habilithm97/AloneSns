@@ -1,24 +1,30 @@
 package com.example.alonesns.Model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.example.alonesns.Presenter.LoginContract;
 import com.example.alonesns.Presenter.MainContract;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-// 데이터 관리를 해줄 Model 클래스
-public class MainModel {
-    int _id;
-    private String date;
-    private String picture;
-    private String content;
+@Entity(tableName = "my_tb")
+public class MainModel implements Serializable {
 
-    public MainModel(int _id, String date, String picture, String content) {
-        this._id = _id;
-        this.date = date;
-        this.picture = picture;
-        this.content = content;
-    }
+    @PrimaryKey(autoGenerate = true) // 데이터가 생성될 때마다 자동으로 고유 id 값이 1씩 증가함
+    private int _id;
+
+    @ColumnInfo(name = "date")
+    private String date;
+
+    @ColumnInfo(name = "picture")
+    private String picture;
+
+    @ColumnInfo(name = "content")
+    private String content;
 
     public int get_id() {
         return _id;
