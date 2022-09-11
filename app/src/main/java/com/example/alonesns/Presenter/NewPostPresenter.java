@@ -2,6 +2,7 @@ package com.example.alonesns.Presenter;
 
 import com.example.alonesns.Model.MainModel;
 import com.example.alonesns.View.HomeFragment;
+import com.example.alonesns.View.NewPostActivity;
 
 public class NewPostPresenter implements NewPostContract.Presenter {
     NewPostContract.View view;
@@ -26,25 +27,19 @@ public class NewPostPresenter implements NewPostContract.Presenter {
     }
 
     @Override
-    public void uploadAction() {
-        view.uploadResult();
-    }
-
-    @Override
     public void cancelAction() {
         view.cancelResult();
     }
 
-    public void saveDataAction() {
+    public void saveData() {
         MainModel item = new MainModel();
-        item.setDate(date);
-        item.setPicture(picturePath);
-        item.setContent(content);
+        item.setDate(NewPostActivity.date);
+        item.setPicture(NewPostActivity.picturePath);
+        item.setContent(NewPostActivity.content);
 
         HomeFragment.roomDB.mainDao().insert(item);
-        finish();
         HomeFragment.items.clear();
         HomeFragment.items.addAll(HomeFragment.roomDB.mainDao().getAll());
-        adapter.notifyDataSetChanged();
+        HomeFragment.adapter.notifyDataSetChanged();
     }
 }

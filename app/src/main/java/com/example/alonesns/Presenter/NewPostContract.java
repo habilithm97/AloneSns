@@ -6,7 +6,6 @@ public interface NewPostContract {
         void setDate();
         void showPhotoMenuDialog(int id);
         void edtControl();
-        void uploadResult();
         void cancelResult();
     }
 
@@ -14,9 +13,8 @@ public interface NewPostContract {
         void getDate();
         void dialogAction(int id);
         void edtAction();
-        void uploadAction();
         void cancelAction();
 
-        void saveDataAction();
+        void saveData();
     }
 }

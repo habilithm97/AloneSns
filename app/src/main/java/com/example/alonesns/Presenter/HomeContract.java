@@ -7,7 +7,6 @@ import java.util.List;
 public interface HomeContract {
 
     interface View {
-        void setData(List<MainModel> items);
     }
 
     interface Presenter {

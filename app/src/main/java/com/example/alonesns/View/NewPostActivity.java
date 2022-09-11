@@ -41,7 +41,7 @@ import java.util.Date;
 public class NewPostActivity extends AppCompatActivity implements NewPostContract.View {
     private static final String TAG = "NewPostActivity";
 
-    private NewPostContract.Presenter presenter;
+    NewPostContract.Presenter presenter;
 
     EditText contentEdt;
     TextView dateTv;
@@ -57,7 +57,9 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     int selectedPhotoMenu;
     AlertDialog.Builder builder;
 
-    ItemAdapter adapter;
+    public static String date;
+    public static String picturePath;
+    public static String content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +99,12 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.uploadAction();
+                date = dateTv.getText().toString();
+                picturePath = savePicture();
+                content = contentEdt.getText().toString();
+
+                presenter.saveData();
+                finish();
             }
         });
 
@@ -270,29 +277,6 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         manager.showSoftInput(contentEdt, InputMethodManager.SHOW_IMPLICIT); // 키보드 보이게 하기
         // setInputType(1)로 키보드를 보이게 했는데 키보드 제어 객체를 빼지 않은 이유는
         // 빼게 된다면 입력창 터치를 두 번해야 키보드가 올라오기 때문임
-    }
-
-    @Override
-    public void uploadResult() {
-        saveData();
-    }
-
-    public void saveData() {
-        String date = dateTv.getText().toString();
-        String picturePath = savePicture();
-        String content = contentEdt.getText().toString();
-
-        /*
-        String sql = "insert into " + MyDatabase.TABLE_NAME + "(DATE, PICTURE, CONTENT) values(" +
-                "'" + date + "', " +
-                "'" + picturePath + "', " +
-                "'" + content + "')";
-
-        Log.d(TAG, "sql : " + sql);
-        MyDatabase database = MyDatabase.getInstance(this);
-        database.execSQL(sql); */
-
-        presenter.saveDataAction();
     }
 
     private String savePicture() {

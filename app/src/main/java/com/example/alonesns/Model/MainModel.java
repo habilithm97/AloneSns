@@ -6,6 +6,10 @@ import androidx.room.PrimaryKey;
 
 import com.example.alonesns.Presenter.LoginContract;
 import com.example.alonesns.Presenter.MainContract;
+import com.example.alonesns.Presenter.NewPostContract;
+import com.example.alonesns.Presenter.NewPostPresenter;
+import com.example.alonesns.View.HomeFragment;
+import com.example.alonesns.View.NewPostActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

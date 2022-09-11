@@ -41,7 +41,5 @@ public abstract class RoomDB extends RoomDatabase {
     }
 
     @Override
-    public void clearAllTables() {
-
-    }
+    public void clearAllTables() {}
 }
