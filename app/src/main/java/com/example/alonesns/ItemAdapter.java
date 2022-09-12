@@ -23,17 +23,13 @@ import java.util.List;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private List<MainModel> items;
-    private Activity context;
+    private Activity activityContext;
     private RoomDB roomDB;
 
-    /*Context context;
+    Context context;
 
-    public HomeAdapter() {
-        items = new ArrayList<>();
-    } */
-
-    public ItemAdapter(Activity context, List<MainModel> items) {
-        this.context = context;
+    public ItemAdapter(Activity activityContext, List<MainModel> items) {
+        this.activityContext = activityContext;
         this.items = items;
         notifyDataSetChanged();
     }
@@ -42,14 +38,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public ItemAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View itemView = (LayoutInflater.from(viewGroup.getContext())).inflate(R.layout.card_item, viewGroup, false);
-        //context = viewGroup.getContext();
+        context = viewGroup.getContext();
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemAdapter.ViewHolder holder, int position) {
         MainModel item = items.get(position);
-        roomDB = RoomDB.getInstance(context);
+        roomDB = RoomDB.getInstance(activityContext);
 
         holder.dateTv.setText(item.getDate());
 
@@ -62,11 +58,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return items.size();
-    }
-
-    public void setItem(List<MainModel> items) {
-        this.items = items;
-        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
@@ -83,9 +74,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    int position = getAdapterPosition();
-
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("삭제하기");
                     builder.setMessage("선택한 게시물을 정말로 삭제하시겠습니까 ?");
                     builder.setIcon(R.drawable.delete);

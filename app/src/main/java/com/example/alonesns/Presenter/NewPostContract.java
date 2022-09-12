@@ -1,5 +1,7 @@
 package com.example.alonesns.Presenter;
 
+import com.example.alonesns.Model.MainModel;
+
 public interface NewPostContract {
 
     interface View {

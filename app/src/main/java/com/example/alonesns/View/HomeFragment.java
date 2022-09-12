@@ -45,7 +45,11 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         adapter = new ItemAdapter(context, items);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        // recyclerView 아이템 순서 역순으로
+        manager.setReverseLayout(true);
+        manager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
     }
 }
