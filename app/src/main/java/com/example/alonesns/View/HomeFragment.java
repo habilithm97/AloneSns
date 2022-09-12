@@ -29,6 +29,8 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     Activity context = getActivity();
     public static List<MainModel> items;
 
+    RecyclerView recyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_home, container, false);
@@ -44,12 +46,18 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         items = roomDB.mainDao().getAll();
         adapter = new ItemAdapter(context, items);
 
-        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        // recyclerView 아이템 순서 역순으로
         manager.setReverseLayout(true);
         manager.setStackFromEnd(true);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        recyclerView.smoothScrollToPosition(adapter.getItemCount()); // 홈 프래그먼트 실행 시 마지막 아이템 위치로 포커스를 이동시킴(맨 위)
     }
 }
