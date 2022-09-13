@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alonesns.Model.MainModel;
@@ -74,13 +73,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("삭제하기");
                     builder.setMessage("선택한 게시물을 정말로 삭제하시겠습니까 ?");
                     builder.setIcon(R.drawable.delete);
                     builder.setPositiveButton("삭제하기", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            deleteItem();
+                            deleteItem(position);
                             Toast.makeText(context, "삭제되었습니다. ", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -101,7 +101,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
     }
 
-    public void deleteItem() {
+    public void deleteItem(int position) {
+        MainModel item = items.get(position);
+        roomDB.mainDao().delete(item);
 
+        items.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, items.size());
     }
 }
