@@ -16,11 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.alonesns.Model.MainModel;
+import com.example.alonesns.Room.RoomDB;
 
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
-
     private List<MainModel> items;
     private Activity activityContext;
     private RoomDB roomDB;

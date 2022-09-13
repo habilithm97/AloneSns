@@ -4,16 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.alonesns.Presenter.LoginContract;
-import com.example.alonesns.Presenter.MainContract;
-import com.example.alonesns.Presenter.NewPostContract;
-import com.example.alonesns.Presenter.NewPostPresenter;
-import com.example.alonesns.View.HomeFragment;
-import com.example.alonesns.View.NewPostActivity;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(tableName = "my_tb")
 public class MainModel implements Serializable {
