@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content" >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/dateTv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_marginBottom="10dp">
+            android:layout_alignParentRight="true"
 
-            <TextView
-                android:id="@+id/dateTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+            android:text="2022-09-14"
+            android:textSize="15sp" />
 
-                android:text="2022-08-22" />
+    </RelativeLayout>
 
-        </RelativeLayout>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:layout_margin="13dp"
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
+        android:src="@drawable/find_image" />
 
-            android:src="@drawable/find_image" />
+    <EditText
+        android:id="@+id/contentEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="13dp"
+        android:padding="8dp"
+        android:gravity="top"
 
-        <EditText
-            android:id="@+id/contentEdt"
-            android:layout_width="match_parent"
-            android:layout_height="280dp"
-            android:layout_margin="5dp"
-            android:gravity="top"
-            android:padding="7dp"
+        android:lines="10"
+        android:scrollbars="vertical"
 
-            android:hint="내용 입력"
+        android:hint="내용 입력"
 
-            android:background="@drawable/edt_custom" />
+        android:background="@drawable/edt_custom" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp">
 
-            <Button
-                android:id="@+id/cancelBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginBottom="5dp"
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
 
-                android:text="취소"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:background="@drawable/btn_custom"/>
+            android:text="취소"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@drawable/btn_custom"/>
 
-            <Button
-                android:id="@+id/uploadBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
+        <Button
+            android:id="@+id/uploadBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
 
-                android:text="업로드"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:background="@drawable/btn_custom"/>
+            android:text="업로드"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@drawable/btn_custom"/>
 
-        </RelativeLayout>
-    </LinearLayout>
-</ScrollView>
+    </RelativeLayout>
+</LinearLayout>
