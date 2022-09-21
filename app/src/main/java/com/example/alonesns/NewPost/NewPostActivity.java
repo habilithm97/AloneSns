@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,6 +29,8 @@ import com.example.alonesns.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,6 +56,8 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     public static String date;
     public static String picturePath;
     public static String content;
+
+    int mDegree = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +214,8 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         if(intent != null) {
             switch (requestCode) {
                 case AppConstants.REQ_PHOTO_SELECTION: // 앨범에서 선택하기 메뉴를 선택했을 경우
+                    mDegree = mDegree + 90;
+
                     Uri selectionImage = intent.getData(); // 가져올 데이터의 주소
                     String[] filePathColumn = {MediaStore.Images.Media.DATA}; // 가져올 컬럼 이름 목록
 
@@ -219,12 +227,80 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                     cursor.close();
 
                     resultBitmap = decodeBitmapFromRes(new File(filePath), imageView.getWidth(), imageView.getHeight());
-                    imageView.setImageBitmap(resultBitmap);
+                    //imageView.setImageBitmap(rotateImage(resultBitmap, mDegree));
+
+                    // 이미지는 내부적으로 회전 정보가 담겨져 있고, 이 회전 정보를 얻어서 반영을 해야 화면에 자연스럽게 표시가 가능함
+                    ExifInterface exif = null;
+                    try {
+                        exif = new ExifInterface(filePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+                    imageView.setImageBitmap(rotateBitmap(resultBitmap, orientation));
+
                     isPhotoFileSaved = true;
                     break;
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    public Bitmap rotateImage(Bitmap bitmap, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree); // 회전 각도 설정
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // 이미지와 Matrix를 설정해서 비트맵 객체 생성
+    }
+
+    public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) { // 이미지 회전
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_NORMAL:
+                return bitmap;
+
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90);
+                matrix.postScale(-1, 1);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90);
+                break;
+
+            default:
+                return bitmap;
+        }
+        try {
+            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return bmRotated;
+        }
+        catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // 대용량 비트맵을 Exception 없이 효과적으로 로딩하기(최적화 로딩)
@@ -297,6 +373,24 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         }
         return picturePath;
     }
+
+    /*
+    private Bitmap rotateImage(Uri uri, Bitmap bitmap) throws IOException {
+        InputStream in = getContentResolver().openInputStream(uri);
+        ExifInterface exifInterface = new ExifInterface(in);
+        in.close();
+
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        Matrix matrix = new Matrix();
+        if(orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            matrix.postRotate(90);
+        } else if(orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            matrix.postRotate(180);
+        } else if(orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            matrix.postRotate(270);
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    } */
 
     @Override
     public void cancelResult() {
