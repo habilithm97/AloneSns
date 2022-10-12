@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.alonesns.ItemAdapter;
 import com.example.alonesns.Model.MainModel;
@@ -56,5 +57,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         super.onResume();
 
         recyclerView.smoothScrollToPosition(adapter.getItemCount()); // 홈 프래그먼트 실행 시 마지막 아이템 위치로 포커스를 이동시킴(맨 위)
+        //int cnt = adapter.getItemCount();
+        //Toast.makeText(getContext(), "아이템 갯수 : " + cnt, Toast.LENGTH_SHORT).show();
     }
 }
