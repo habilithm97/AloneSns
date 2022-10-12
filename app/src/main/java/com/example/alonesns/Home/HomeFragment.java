@@ -10,20 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.alonesns.ItemAdapter;
-import com.example.alonesns.Model.MainModel;
 import com.example.alonesns.R;
 import com.example.alonesns.Room.RoomDB;
-
-import java.util.List;
 
 public class HomeFragment extends Fragment implements HomeContract.View {
     HomePresenter homePresenter;
     RecyclerView recyclerView;
-
-    public static List<MainModel> items;
     public static RoomDB roomDB;
     public static ItemAdapter adapter;
     Activity activityContext = getActivity();
@@ -37,11 +31,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
 
     private void init(ViewGroup rootView) {
         homePresenter = new HomePresenter(this);
-        items = homePresenter.items; // presenter의 ArrayList를 가져옴
-
         roomDB = RoomDB.getInstance(getContext());
-        items = roomDB.mainDao().getAll(); // RoomDB에 있는 데이터를 모두 가져와서 리스트로 표시
-        adapter = new ItemAdapter(activityContext, items);
+        // RoomDB에 있는 데이터를 모두 가져와서 presenter를 통해 리스트에 담아 표시함
+        homePresenter.items = roomDB.mainDao().getAll();
+        adapter = new ItemAdapter(activityContext, homePresenter.items);
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -57,7 +50,5 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         super.onResume();
 
         recyclerView.smoothScrollToPosition(adapter.getItemCount()); // 홈 프래그먼트 실행 시 마지막 아이템 위치로 포커스를 이동시킴(맨 위)
-        //int cnt = adapter.getItemCount();
-        //Toast.makeText(getContext(), "아이템 갯수 : " + cnt, Toast.LENGTH_SHORT).show();
     }
 }
