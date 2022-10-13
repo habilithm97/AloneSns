@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     private void init(ViewGroup rootView) {
         homePresenter = new HomePresenter(this);
         roomDB = RoomDB.getInstance(getContext());
-        // RoomDB에 있는 데이터를 모두 가져와서 presenter를 통해 리스트에 담아 표시함
+        // RoomDB에 있는 데이터를 모두 가져와서 presenter를 통해 리스트에 담아 어댑터와 연결
         homePresenter.items = roomDB.mainDao().getAll();
         adapter = new ItemAdapter(activityContext, homePresenter.items);
 
@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         manager.setReverseLayout(true);
         manager.setStackFromEnd(true);
         recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter); // 어댑터를 RecyclerView에 설정
     }
 
     @Override

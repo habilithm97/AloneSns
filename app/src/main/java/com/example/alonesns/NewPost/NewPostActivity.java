@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -77,21 +76,14 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
             @Override
             public void onClick(View v) {
                 if(isPhotoCaptured || isPhotoFileSaved) {
-                    presenter.dialogAction(AppConstants.PHOTO); // 사진이 있을 때
+                    presenter.dialogAction(AppConstants.PHOTO); // 이미지가 있을 때
                 } else {
-                    presenter.dialogAction(AppConstants.NOT_PHOTO); // 사진이 없을 때
+                    presenter.dialogAction(AppConstants.NOT_PHOTO); // 이미지가 없을 때
                 }
             }
         });
 
         contentEdt = (EditText)findViewById(R.id.contentEdt);
-        //contentEdt.setInputType(0); // 액티비티 실행 시 키보드가 자동으로 올라오는 현상 방지, 0은 null
-        /*contentEdt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.edtAction();
-            }
-        }); */
 
         Button uploadBtn = (Button)findViewById(R.id.uploadBtn);
         uploadBtn.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +97,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                     presenter.saveData();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "업로드할 사진이 없습니다. ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "업로드할 이미지가 없습니다. ", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -133,9 +125,9 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     @Override
     public void showPhotoMenuDialog(int id) {
         switch (id) {
-            case AppConstants.PHOTO: // 이미지뷰에 사진이 있는 경우
+            case AppConstants.PHOTO: // 이미지뷰에 이미지가 있는 경우
                 builder = new AlertDialog.Builder(this);
-                builder.setTitle("사진 메뉴 선택");
+                builder.setTitle("이미지 메뉴 선택");
 
                 // .setSingleChoiceItems() : 대화 상자 내용에 표시할 아이템 리스트와 아이템을 클릭했을 때 반응할 리스너를 설정함
                 builder.setSingleChoiceItems(R.array.array_photo, 0, new DialogInterface.OnClickListener() {
@@ -148,11 +140,11 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                 builder.setPositiveButton("선택", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (selectedPhotoMenu == 0) {
-                            showPhotoSelectionActivity(); // 앨범에서 선택하기
+                        if (selectedPhotoMenu == 0) { // 앨범에서 선택하기
+                            showPhotoSelectionActivity();
                         } else if (selectedPhotoMenu == 1) { // 삭제하기
                             imageView.setImageResource(R.drawable.find_image);
-                            // 사진이 삭제되었기 때문에 사진 유무 상태를 변경함
+                            // 이미지가 삭제되었기 때문에 이미지 유무 상태를 변경함
                             isPhotoCanceled = true;
                             isPhotoFileSaved = false;
                         }
@@ -165,9 +157,9 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                 });
                 break;
 
-                case AppConstants.NOT_PHOTO: // 이미지뷰에 사진이 없는 경우
+                case AppConstants.NOT_PHOTO: // 이미지뷰에 이미지가 없는 경우
                     builder = new AlertDialog.Builder(this);
-                    builder.setTitle("사진 메뉴 선택");
+                    builder.setTitle("이미지 메뉴 선택");
 
                     builder.setSingleChoiceItems(R.array.array_not_photo, 0, new DialogInterface.OnClickListener() {
                         @Override
@@ -179,8 +171,8 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                     builder.setPositiveButton("선택", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if(selectedPhotoMenu == 0) {
-                                showPhotoSelectionActivity(); // 앨범에서 선택하기
+                            if(selectedPhotoMenu == 0) { // 앨범에서 선택하기
+                                showPhotoSelectionActivity();
                             }
                         }
                     });
@@ -205,14 +197,14 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
 
     public void showPhotoSelectionActivity() { // 앨범에서 선택하기
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI); // 외부 스토리지에서 가져오기
-        startActivityForResult(intent, AppConstants.REQ_PHOTO_SELECTION);
+        startActivityForResult(intent, AppConstants.PHOTO_SELECTION);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         if(intent != null) {
             switch (requestCode) {
-                case AppConstants.REQ_PHOTO_SELECTION: // 앨범에서 선택하기 메뉴를 선택했을 경우
+                case AppConstants.PHOTO_SELECTION: // 앨범에서 선택하기 메뉴를 선택했을 경우
                     Uri imageUri = intent.getData(); // 가져올 데이터의 주소
                     String[] filePathColumn = {MediaStore.Images.Media.DATA}; // 가져올 컬럼 이름 목록
 
@@ -223,18 +215,17 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
                     String filePath = cursor.getString(columnIndex); // 커서를 사용해 가져온 컬럼 인덱스를 문자열로 변환하기
                     cursor.close();
 
-                    resultBitmap = decodeBitmapFromRes(new File(filePath), imageView.getWidth(), imageView.getHeight());
+                    resultBitmap = decodeBitmapFromRes(new File(filePath), imageView.getWidth(), imageView.getHeight()); // 가져온 이미지의 크기를 조절한 결과 비트맵
 
-                    ExifInterface exifInterface = null;
+                    ExifInterface exifInterface = null; // 이미지가 가지고 있는 정보의 집합 클래스 ExifInterface
                     try {
-                        exifInterface = new ExifInterface(filePath);
+                        exifInterface = new ExifInterface(filePath); // 이미지 경로를 이용하여 exifInterface 객체 생성
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
 
-                    rotatedBitmap = rotateBitmap(resultBitmap, orientation);
-
+                    rotatedBitmap = rotateBitmap(resultBitmap, orientation); // 정방향대로 회전된 이미지
                     imageView.setImageBitmap(rotatedBitmap);
                     isPhotoFileSaved = true;
             }
@@ -323,32 +314,23 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
         return inSampleSize;
     }
 
-    @Override
-    public void edtControl() {
-        contentEdt.setInputType(1); // 키보드 보이게 하기
-        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // 키보드 제어 객체
-        manager.showSoftInput(contentEdt, InputMethodManager.SHOW_IMPLICIT); // 키보드 보이게 하기
-        // setInputType(1)로 키보드를 보이게 했는데 키보드 제어 객체를 빼지 않은 이유는
-        // 빼게 된다면 입력창 터치를 두 번해야 키보드가 올라오기 때문임
-    }
-
     private String savePicture() {
         if(rotatedBitmap == null) {
-            Log.d(TAG, "저장할 사진이 없음. ");
+            Log.d(TAG, "저장할 이미지가 없음. ");
             return "";
         }
-        // 사진은 폴더를 만들어 저장하고, 사진 경로만 데이터베이스에 저장함
-        File photoFolder = new File(AppConstants.PHOTO_FOLDER); // 사진을 저장할 폴더
+        // 이미지는 폴더를 만들어 저장하고, 이미지 경로만 데이터베이스에 저장함
+        File photoFolder = new File(AppConstants.PHOTO_FOLDER); // 이미지를 저장할 폴더
         if(!photoFolder.isDirectory()) {
             photoFolder.mkdir();
-            Log.d(TAG, "사진 폴더 생성 : " + photoFolder);
+            Log.d(TAG, "이미지 폴더 생성 : " + photoFolder);
         }
-        String photoFileName = createFileName(); // 현재 날짜를 사진 파일 이름으로 함
-        String picturePath = photoFolder + File.separator + photoFileName; // 사진 경로
+        String photoFileName = createFileName(); // 현재 날짜를 이미지 파일 이름으로 함
+        String picturePath = photoFolder + File.separator + photoFileName; // 이미지 경로
 
         try {
             FileOutputStream out = new FileOutputStream(picturePath);
-            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // 이미지를 압축(100이면 그대로) -> resultBitmap은 이미 압축 과정이 끝남
+            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // 이미지를 압축(100이면 그대로) -> rotateBitmap은 이미 압축 과정이 끝남
             out.close();
         } catch (Exception e) {
             e.printStackTrace();

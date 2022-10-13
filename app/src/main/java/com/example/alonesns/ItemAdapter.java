@@ -21,10 +21,9 @@ import com.example.alonesns.Room.RoomDB;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
-    private List<MainModel> items;
-    private Activity activityContext;
-    private RoomDB roomDB;
-
+    List<MainModel> items;
+    Activity activityContext;
+    RoomDB roomDB;
     Context context;
 
     public ItemAdapter(Activity activityContext, List<MainModel> items) {

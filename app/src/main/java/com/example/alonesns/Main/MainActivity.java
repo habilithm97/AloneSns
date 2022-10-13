@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 return false;
             }
         });
-        setPicturePath(); // 사진 경로 접근 및 폴더 없으면 생성
+        setPicturePath(); // 이미지 경로 접근 및 폴더 없으면 생성
 
         presenter.onTabItemSelectedListener();
     }

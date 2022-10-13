@@ -22,11 +22,6 @@ public class NewPostPresenter implements NewPostContract.Presenter {
     }
 
     @Override
-    public void edtAction() {
-        view.edtControl();
-    }
-
-    @Override
     public void cancelAction() {
         view.cancelResult();
     }
