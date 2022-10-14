@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UsedBookStore">
+
         <activity android:name=".NewPost.NewPostActivity"
             android:exported="true"></activity>
         <activity android:name=".Main.MainActivity"

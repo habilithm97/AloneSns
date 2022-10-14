@@ -29,7 +29,9 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
 
-            android:text="여기에 내용이 표시됩니다. \n여기에 내용이 표시됩니다. \n여기에 내용이 표시됩니다. " />
+            android:text="여기에 내용이 표시됩니다. \n여기에 내용이 표시됩니다. \n여기에 내용이 표시됩니다. "
+            android:maxLines="3"
+            android:ellipsize="end" />
 
         <RelativeLayout
             android:layout_width="match_parent"

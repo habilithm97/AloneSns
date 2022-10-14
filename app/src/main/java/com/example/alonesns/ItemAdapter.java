@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     Activity activityContext;
     RoomDB roomDB;
     Context context;
+
+    String picturePath;
 
     public ItemAdapter(Activity activityContext, List<MainModel> items) {
         this.activityContext = activityContext;
@@ -47,7 +50,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
         holder.dateTv.setText(item.getDate());
 
-        String picturePath = item.getPicture();
+        picturePath = item.getPicture();
         holder.imageView.setImageURI(Uri.parse("file://" + picturePath));
 
         holder.contentTv.setText(item.getContent());
@@ -58,7 +61,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         return items.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
         TextView dateTv, contentTv;
         ImageView imageView;
 
@@ -97,6 +100,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         @Override
         public boolean onLongClick(View v) {
             return true;
+        }
+
+        @Override
+        public void onClick(View v) {
         }
     }
 

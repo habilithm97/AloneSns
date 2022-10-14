@@ -56,7 +56,7 @@ public class NewPostActivity extends AppCompatActivity implements NewPostContrac
     public static String picturePath;
     public static String content;
 
-    Bitmap rotatedBitmap;
+    public static Bitmap rotatedBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
