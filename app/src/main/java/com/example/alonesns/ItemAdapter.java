@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     Context context;
 
     String picturePath;
+
+    int itemClickToggle = 0;
 
     public ItemAdapter(Activity activityContext, List<MainModel> items) {
         this.activityContext = activityContext;
@@ -93,6 +96,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                     });
                     builder.show();
                     return true;
+                }
+            });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(itemClickToggle == 0) {
+                        contentTv.setMaxLines(Integer.MAX_VALUE);
+                        contentTv.setEllipsize(null);
+                        itemClickToggle++;
+                    } else {
+                        contentTv.setMaxLines(3);
+                        contentTv.setEllipsize(TextUtils.TruncateAt.END);
+                        itemClickToggle--;
+                    }
                 }
             });
         }
