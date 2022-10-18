@@ -82,49 +82,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             imageView = itemView.findViewById(R.id.imageView);
             contentTv = itemView.findViewById(R.id.contentTv);
 
-            /*
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    int position = getAdapterPosition();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("수정 또는 삭제");
-                    builder.setMessage("선택한 게시물을 수정 또는 삭제하시겠습니까 ?");
-                    //builder.setIcon(R.drawable.delete);
-
-                    builder.setPositiveButton("삭제하기", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            deleteItem(position);
-                            Toast.makeText(context, "삭제되었습니다. ", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    builder.setNeutralButton("수정하기", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //updateItem(position);
-                            AlertDialog updateDialog = updateDialog();
-                            LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            View layout = layoutInflater.inflate(R.layout.edt_dialog, (ViewGroup)itemView.findViewById(R.layout.edt_dialog));
-                            updateDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-
-                            if(layout.getParent() != null) {
-                                ((ViewGroup) layout.getParent()).removeView(layout);
-                            }
-                            updateDialog.setView(layout);
-                            updateDialog.show();
-                        }
-                    });
-
-                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    builder.show();
-                    return true;
-                }
-            }); */
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -190,6 +147,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                         });
                         dialog.show();
                         break;
+
+                    case 102: // 삭제 항목 클릭 시
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+                        builder1.setTitle("삭제");
+                        builder1.setMessage("선택한 게시물을 정말 삭제하시겠습니까 ?");
+                        builder1.setIcon(R.drawable.delete);
+
+                        builder1.setPositiveButton("삭제하기", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteItem(getAdapterPosition());
+                                Toast.makeText(context, "삭제되었습니다. ", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        builder1.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        builder1.show();
+                        return true;
                 }
                 return true;
             }
