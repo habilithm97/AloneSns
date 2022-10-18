@@ -121,15 +121,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         View view = LayoutInflater.from(context).inflate(R.layout.edt_dialog, null, false);
                         builder.setView(view);
+                        AlertDialog dialog = builder.create();
 
                         EditText edt = (EditText) view.findViewById(R.id.edt);
-                        Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
-                        Button editBtn = (Button) view.findViewById(R.id.editBtn);
-
                         // 해당 아이템에 입력되어 있던 데이터를 불러와서 대화상자에 표시함
                         edt.setText(items.get(getAdapterPosition()).getContent());
 
-                        AlertDialog dialog = builder.create();
+                        Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
+                        cancelBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                               dialog.dismiss();
+                            }
+                        });
+
+                        Button editBtn = (Button) view.findViewById(R.id.editBtn);
                         editBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
