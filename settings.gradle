@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "AloneSns"
+rootProject.name = "ShareToday"

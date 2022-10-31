@@ -11,7 +11,7 @@
 
         android:gravity="center"
 
-        android:text="나홀로 SNS"
+        android:text="ShareToday"
         android:textSize="30sp" />
 
     <EditText

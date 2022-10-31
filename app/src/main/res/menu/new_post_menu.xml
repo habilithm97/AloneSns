@@ -4,8 +4,9 @@
 
     <item
         android:id="@+id/newPost"
-        app:showAsAction="never"
+        app:showAsAction="always"
         android:enabled="true"
+        android:icon="@drawable/write"
         android:title="작성하기" />
 
 </menu>

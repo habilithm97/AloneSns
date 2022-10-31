@@ -147,6 +147,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                                 items.clear();
                                 items.addAll(roomDB.mainDao().getAll());
                                 notifyDataSetChanged();
+                                Toast.makeText(context, "수정되었습니다. ", Toast.LENGTH_SHORT).show();
 
                                 dialog.dismiss();
                             }
