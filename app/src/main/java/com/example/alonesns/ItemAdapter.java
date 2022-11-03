@@ -29,6 +29,8 @@ import com.example.alonesns.Room.RoomDB;
 
 import java.util.List;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     List<MainModel> items;
     Activity activityContext;
@@ -80,6 +82,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
             dateTv = itemView.findViewById(R.id.dateTv);
             imageView = itemView.findViewById(R.id.imageView);
+            PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(imageView);
             contentTv = itemView.findViewById(R.id.contentTv);
 
             itemView.setOnClickListener(new View.OnClickListener() {
